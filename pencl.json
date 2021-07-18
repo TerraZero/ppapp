@@ -1,0 +1,15 @@
+{
+  "router": {
+    "debug": true
+  },
+  "knex": {
+    "schema": {
+      "path": "~/server/db/schemas",
+      "pattern": "**/schema.*.json",
+      "types": {
+        "entity": "entity/schema.entity.[entity].[bundle].json",
+        "field": "fields/schema.field.[field].json"
+      }
+    }
+  }
+}

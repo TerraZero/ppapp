@@ -1,0 +1,9 @@
+{
+  "field": "title_3",
+  "type": "string",
+  "config": {
+    "length": 80
+  },
+  "_type": "field",
+  "_name": "schema.field.title_3"
+}

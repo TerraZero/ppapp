@@ -1,0 +1,9 @@
+{
+  "entity": "item",
+  "bundle": "page",
+  "label": "Page",
+  "config": {},
+  "fields": {},
+  "_type": "entity",
+  "_name": "schema.entity.item.page"
+}

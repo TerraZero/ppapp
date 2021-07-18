@@ -1,0 +1,10 @@
+{
+  "field": "title_2",
+  "label": "Titel 2",
+  "type": "string",
+  "config": {
+    "length": 80
+  },
+  "_type": "field",
+  "_name": "schema.field.title_2"
+}

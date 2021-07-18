@@ -1,0 +1,23 @@
+{
+  "entity": "node",
+  "bundle": "page",
+  "label": "Page",
+  "config": {},
+  "fields": {
+    "title": {
+      "cardinality": 1,
+      "trim": " []"
+    },
+    "title_2": {
+      "cardinality": 0,
+      "trim": " []"
+    },
+    "text": {
+      "cardinality": 2,
+      "trim": " []",
+      "label": "Feld Text"
+    }
+  },
+  "_type": "entity",
+  "_name": "schema.entity.node.page"
+}
