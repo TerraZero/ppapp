@@ -11,9 +11,6 @@
 <script>
 export default {
   props: ['value', 'field'],
-  data() {
-    return {};
-  },
   computed: {
     counts() {
       const count = (this.value && this.value.length || 0);

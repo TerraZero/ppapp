@@ -5,8 +5,8 @@
       h1(v-if="page") {{ title }}
       h2(v-else) {{ title }}
     EntityInfo(v-if="data", :data="data")
-    WidgetTextField(v-if="data", v-for="prop, name in props", :key="name", :prop="prop", :value="getValue('prop', prop)", @input="doInput('prop', prop, $event)")
-    WidgetTextField(v-if="data", v-for="field, key in fields", :key="key", :field="field", :value="getValue('field', field)", @input="doInput('field', field, $event)")
+    component(v-if="data", v-for="prop, name in props", :key="name", :is="display.props[name].widget", :display="display.props[name]", :prop="prop", :value="getValue('prop', prop)", @input="doInput('prop', prop, $event)")
+    component(v-if="data", v-for="field, key in fields", :key="key", :is="display.fields[field.storage.field].widget", :display="display.fields[field.storage.field]", :field="field", :value="getValue('field', field)", @input="doInput('field', field, $event)")
     .entity-form__actions
       el-button(type="primary", icon="el-icon-check", :loading="loading", @click="save()") Save
       el-button(icon="el-icon-close", @click="abort()") Abort
@@ -29,6 +29,7 @@ export default {
       data: null,
       schema: null,
       fields: [],
+      display: null,
       loading: false,
     };
   },
@@ -119,6 +120,9 @@ export default {
           id: this.id,
         };
       }
+
+      this.display = (await api.request('display.view', this.params)).content;
+      console.log(this.display);
 
       this.schema = (await api.request('schema.view', this.params)).content;
 

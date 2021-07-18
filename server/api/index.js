@@ -8,6 +8,7 @@ import Router from 'pencl-router';
 import SchemaController from './controllers/knex/SchemaController';
 import RouterController from './controllers/router/RouterController';
 import ContentController from './controllers/knex/ContentController';
+import DisplayController from './controllers/knex/DisplayController';
 
 const manager = Router().manager;
 
@@ -17,6 +18,7 @@ schemaController.onLoad(manager);
 
 manager.addController(new RouterController());
 manager.addController(new ContentController());
+manager.addController(new DisplayController());
 
 console.log(Router().config);
 

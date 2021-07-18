@@ -1,0 +1,8 @@
+{
+  "content": {
+    "label": "Content"
+  },
+  "content.entities": {
+    "generate": "generateEntities"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "widgets": {
+    "WidgetTextField": {
+      "types": ["string"],
+      "required": {
+        "component": "InputCheckbox",
+        "config": {
+          "label": "Required"
+        }
+      }
+    }
+  },
+  "defaults": {
+    "string": "WidgetTextField"
+  }
+}

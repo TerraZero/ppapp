@@ -8,7 +8,8 @@
       "pattern": "**/schema.*.json",
       "types": {
         "entity": "entity/schema.entity.[entity].[bundle].json",
-        "field": "fields/schema.field.[field].json"
+        "field": "fields/schema.field.[field].json",
+        "display": "displays/schema.display.[entity].[bundle].json"
       }
     }
   }

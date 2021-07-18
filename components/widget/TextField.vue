@@ -5,11 +5,15 @@
       template(v-slot="{ data = {value: ''}, schema, count }")
         el-input.text-field__input(:value="data.value", @input="input(count, $event)", :maxlength="schema.storage.config.length", show-word-limit)
     el-input.text-field__input(v-if="prop", :value="value", @input="single", :maxlength="prop.config.length", show-word-limit)
+    el-divider
 </template>
 
 <script>
 export default {
-  props: ['value', 'field', 'prop', 'actionid'],
+  props: ['value', 'field', 'prop', 'display'],
+  data() {
+    return {};
+  },
   computed: {
     label() {
       return (this.field ? this.field.label : this.prop.label || this.prop.name);
