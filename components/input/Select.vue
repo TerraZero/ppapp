@@ -1,20 +1,15 @@
 <template lang="pug">
-  .input-checkbox(:style="getStyles()")
-    InputDecorate(:field="field", :name="name", :value="value", :ident="ident", :label="label", :noLabel="true", @addItem="addItem", @removeItem="removeItem", :actions="{add: true, remove: true}")
-      template(v-slot="{ value, index, ident, label }")
-        el-checkbox(:id="ident", :value="value", @input="input($event, index)", :border="field.border") {{ label }}
+  .input-select(:style="getStyles()")
+    InputDecorate(:field="field", :name="name", :value="value", :ident="ident", @addItem="addItem", @cleanItems="cleanItems", @removeItem="removeItem", :actions="{add: true, remove: true, clean: true}")
+      template(v-slot="{ value, index, ident }")
+        el-select.input-select__input(:id="ident", :value="value", @input="input($event, index)", :placeholder="field.placeholder", clearable, :multiple="field.multiple")
+          el-option(v-for="option, value in field.options", :key="value", :label="option", :value="value") 
     el-divider
 </template>
 
 <script>
 export default {
   props: ['field', 'value', 'name', 'ident'],
-  computed: {
-    label() {
-      if (this.value) return this.field.on_label || this.field.label;
-      if (!this.value) return this.field.off_label || this.field.label;
-    },
-  },
   methods: {
     getStyles() {
       const styles = {};
@@ -25,9 +20,22 @@ export default {
       return styles;
     },
 
+    cleanItems() {
+      const value = [];
+      for (const item of this.value) {
+        if (item.value !== '' && item.value !== null) {
+          value.push(item);
+        }
+      }
+      if (!value.length) {
+        value.push({value: ''});
+      }
+      this.$emit('input', value);
+    },
+
     addItem(count) {
       for (let i = 0; i < count; i++) {
-        this.value.push({value: false});
+        this.value.push({value: ''});
       }
       this.$emit('input', this.value);
     },

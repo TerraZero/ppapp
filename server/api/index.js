@@ -9,6 +9,7 @@ import SchemaController from './controllers/knex/SchemaController';
 import RouterController from './controllers/router/RouterController';
 import ContentController from './controllers/knex/ContentController';
 import DisplayController from './controllers/knex/DisplayController';
+import UploadController from './controllers/system/UploadController';
 
 const manager = Router().manager;
 
@@ -19,6 +20,7 @@ schemaController.onLoad(manager);
 manager.addController(new RouterController());
 manager.addController(new ContentController());
 manager.addController(new DisplayController());
+manager.addController(new UploadController());
 
 console.log(Router().config);
 

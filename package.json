@@ -11,6 +11,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.1",
     "core-js": "^3.9.1",
+    "dayjs": "^1.10.6",
     "element-ui": "^2.15.2",
     "nuxt": "^2.15.3",
     "pencl-core": "git+https://github.com/TerraZero/pencl-core.git",

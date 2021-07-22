@@ -2,10 +2,11 @@
   "widgets": {
     "WidgetTextField": {
       "types": ["string"],
-      "required": {
-        "component": "InputCheckbox",
-        "config": {
-          "label": "Required"
+      "form": {
+        "required": {
+          "comp": "InputCheckbox",
+          "label": "Required",
+          "fallback": false
         }
       }
     }

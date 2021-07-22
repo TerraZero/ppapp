@@ -1,0 +1,9 @@
+{
+  "entity": "file",
+  "bundle": "file",
+  "label": "File",
+  "config": {},
+  "fields": {},
+  "_type": "entity",
+  "_name": "schema.entity.file.file"
+}

@@ -93,3 +93,5 @@ sw.*
 .vscode
 
 server/db/database.sqlite3
+
+/static/*

@@ -30,6 +30,16 @@ export default class API {
   /**
    * @param {string} route 
    * @param {Object} params 
+   * @returns {string}
+   */
+  async getUrl(route, params = {}) {
+    const match = (await this.routes())[route];
+    return this.mount + this.toUrl(match.pattern, params);
+  }
+
+  /**
+   * @param {string} route 
+   * @param {Object} params 
    * @param {(Object|undefined|null)} route_data
    */
   async request(route, params = {}, route_data = undefined) {
