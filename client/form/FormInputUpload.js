@@ -15,7 +15,7 @@ export default class FormInputUpload extends FormInputType {
       const value = [];
       
       for (const item of state) {
-        value.push(item.value);
+        value.push(item.value[0]);
       }
       return value;
     }

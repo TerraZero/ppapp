@@ -1,6 +1,6 @@
 <template lang="pug">
 .input-form
-  component.input-form__field(v-for="field, name in form", :key="name" :is="getComponent(field)", :name="name", :ident="getIdent(name)", :field="field", :value="value[name]", @input="input(field, name, $event)")
+  component.input-form__field(v-for="field, name in form", :key="name" :is="field.comp", :name="name", :ident="getIdent(name)", :field="field", :value="value[name]", @input="input(field, name, $event)")
 </template>
 
 <script>
@@ -17,10 +17,6 @@ export default {
         return this.ident + '.' + name;
       }
       return name;
-    },
-
-    getComponent(field) {
-      return Form.getComponent(field);
     },
 
     getValue(name) {

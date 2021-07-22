@@ -11,12 +11,12 @@ export default class FormInputGroup extends FormInputType {
 
   getValue(definition, state) {
     if (definition.cardinality === undefined) {
-      return Form.getValueUpdate(definition.form, state);
+      return Form.getValue(definition.form, state);
     } else {
       const value = [];
       
       for (const item of state) {
-        value.push(Form.getValueUpdate(definition.form, item.value));
+        value.push(Form.getValue(definition.form, item.value));
       }
       return value;
     }
@@ -24,10 +24,9 @@ export default class FormInputGroup extends FormInputType {
 
   getTemplate(definition, value, index) {
     if (index === undefined) {
-      return Form.getStateUpdate(definition.form, value || {});
+      return Form.getState(definition.form, value || {});
     } else {
-      console.log(value);
-      return Form.getStateUpdate(definition.form, value && value[index] || {});
+      return Form.getState(definition.form, value && value[index] || {});
     }
   }
 

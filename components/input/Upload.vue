@@ -60,25 +60,24 @@ export default {
           value.push(item);
         }
       }
+      
       if (!value.length) {
-        this.addItem(1);
+        this.value.splice(0, this.value.length);
+        this.addItem();
+      } else {
+        this.$emit('input', value);
       }
-      this.$emit('input', value);
     },
 
-    addItem(count) {
-      for (let i = 0; i < count; i++) {
-        this.value.push({value: []});
-      }
+    addItem() {
+      this.value.push({value: []});
       this.$emit('input', this.value);
     },
 
-    removeItem(count) {
-      for (let i = 0; i < count; i++) {
-        this.value.pop();
-      }
+    removeItem() {
+      this.value.pop();
       if (!this.value.length) {
-        this.addItem(count);
+        this.addItem();
       } else {
         this.$emit('input', this.value);
       }
@@ -107,7 +106,8 @@ export default {
     },
 
     doDeleteValue(index, value) {
-      this.removeItem(1);
+      this.value[index].value = [];
+      this.$emit('input', this.value);
     },
   },
 };
