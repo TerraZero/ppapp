@@ -3,7 +3,7 @@
   LayoutContainer
     template(#title)
       h1 List {{ label }}
-    template(#actions)
+    template(#controls)
       .content-list-page__actions
         el-input(placeholder="Search", prefix-icon="el-icon-search", :value="search" @input="input('search', $event)")
         el-select(placeholder="Filter Bundle", :value="bundle", @input="input('bundle', $event)")

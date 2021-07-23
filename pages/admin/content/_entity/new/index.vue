@@ -3,7 +3,7 @@
   LayoutList(:items="bundles")
     template(#title)
         h1 Create {{ label }}
-    template(#actions)
+    template(#controls)
       FormButton(icon="el-icon-close", text="Abort", @click.native="abort")
     template(v-slot="props")
       el-link(:underline="false", @click="create(props.index)")

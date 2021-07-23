@@ -30,6 +30,8 @@ export default class SchemaController extends ControllerBase {
   initRoutes(builder) {
     builder.namespace('schema');
     builder.create('create.entity', 'create/entity', this.createEntity).checkPOST();
+    builder.create('create.entity.form', 'create/entity/:entity/form', this.createEntityForm).checkGET();
+    builder.create('create.entity.form.submit', 'create/entity/:entity/form', this.createEntityFormSubmit).checkPOST();
     builder.create('create.entity.field', 'create/entity/field', this.createEntityField).checkPOST();
     builder.create('create.field', 'create/field', this.createField).checkPOST();
     builder.create('view.field', 'view/fields(/:field)', this.viewField).checkGET();
@@ -53,6 +55,35 @@ export default class SchemaController extends ControllerBase {
     Knex().schemas.dbCreateEntity(Knex().connection(), entity);
 
     return serve.json(entity.entityschema.data);
+  }
+
+  /**
+   * @param {import('pencl-router/src/Request/Serve')} serve 
+   */
+  async createEntityForm(serve) {
+    const entity = serve.BAG.entity;
+    const type = Knex().schemas.getEntityType(entity);
+
+    const form = {};
+
+    type.formSchemaBundle(form);
+
+    return serve.json({ form });
+  }
+
+  /**
+   * @param {import('pencl-router/src/Request/Serve')} serve 
+   */
+  async createEntityFormSubmit(serve) {
+    const entity = serve.BAG.entity;
+    const type = Knex().schemas.getEntityType(entity);
+
+    const form = {};
+
+    type.formSchemaBundle(form);
+    const value = await serve.FORM.getValue('value');
+
+    return serve.json({ form, value });
   }
 
   /**

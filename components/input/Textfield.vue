@@ -2,11 +2,13 @@
   .input-textfield(:style="getStyles()")
     InputDecorate(:field="field", :name="name", :value="value", :ident="ident", @addItem="addItem", @cleanItems="cleanItems", @removeItem="removeItem", :actions="{add: true, remove: true, clean: true}")
       template(v-slot="{ value, index, ident }")
-        el-input.input-textfield__input(:id="ident", :value="value", @input="input($event, index)", :placeholder="field.placeholder")
+        el-input.input-textfield__input(:id="ident", :value="value", @input="input($event, index)", :placeholder="field.placeholder", :suffix-icon="(field.mask ? 'el-icon-cpu' : '')")
     el-divider
 </template>
 
 <script>
+import Form from '~/client/form/Form';
+
 export default {
   props: ['field', 'value', 'name', 'ident'],
   methods: {
@@ -51,6 +53,9 @@ export default {
     },
 
     input(value, index) {
+      if (this.field.mask) {
+        value = Form.getMask(this.field.mask, value);
+      }
       if (index === undefined) {
         this.$emit('input', value);
       } else {

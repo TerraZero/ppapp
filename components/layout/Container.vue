@@ -4,10 +4,12 @@
       .container__title
         slot(name="title")
           | {{ title }}
-      .container__actions
-        slot(name="actions")
+      .container__controls
+        slot(name="controls")
     .container__content
       slot
+    .container__actions
+      slot(name="actions")
 </template>
 
 <script>
@@ -34,5 +36,14 @@ export default {
     background: #F56C6C
 
   &__content
+    padding: 10px
+
+  &__controls
+    display: flex
+    justify-content: right
+    gap: 10px
+
+  &__actions
+    text-align: right
     padding: 10px
 </style>

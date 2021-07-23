@@ -1,9 +1,9 @@
 <template lang="pug">
-  .page
-    .page__content
+  .page-test
+    .page-test__content
       InputForm(:form="form", v-model="state", ident="test", @input="input")
       el-button(type="primary", @click="click") Submit
-    .page__side
+    .page-test__side
       pre.output(v-html="format(state)")
 </template>
 
@@ -11,6 +11,16 @@
 import Form from '~/client/form/Form';
 
 const form = {
+  key: {
+    type: 'string',
+    label: 'Key',
+    mask: [
+      {
+        regex: '([^a-z]+)',
+        replace: '_',
+      }
+    ],
+  },
   upload: {
     type: 'upload',
     label: 'Upload',
@@ -191,7 +201,7 @@ export default {
 </script>
 
 <style lang="sass">
-.page
+.page-test
   display: grid
   grid-template-columns: 2fr 1fr
 

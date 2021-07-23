@@ -67,4 +67,22 @@ export default class Form {
     return value;
   }
 
+  /**
+   * @typedef {Object} T_MaskItem
+   * @property {string} regex
+   * @property {string} replace
+   */
+
+  /**
+   * @param {T_MaskItem[]} mask 
+   * @param {string} value 
+   * @returns {string}
+   */
+  static getMask(mask, value) {
+    for (const item of mask) {
+      value = value.replace(new RegExp(item.regex, 'g'), item.replace);
+    }
+    return value;
+  }
+
 }

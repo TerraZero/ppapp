@@ -4,13 +4,9 @@
 </template>
 
 <script>
-import Form from '~/client/form/Form';
 
 export default {
   props: ['form', 'value', 'ident'],
-  mounted() {
-    console.log(this.form, this.value);
-  },
   methods: {
     getIdent(name) {
       if (this.ident) {

@@ -1,4 +1,5 @@
 import ControllerBase from 'pencl-router/src/Controller/ControllerBase';
+import Menu from '../../../custom/Menu';
 
 export default class SchemaController extends ControllerBase {
 
@@ -7,8 +8,19 @@ export default class SchemaController extends ControllerBase {
    */
   initRoutes(builder) {
     builder.namespace('router');
+    builder.create('menu', 'menu', this.viewMenu).checkGET();
     builder.create('routes', 'routes', this.viewRoutes).checkGET();
   }
+
+  /**
+   * @param {import('pencl-router/src/Request/Serve')} serve 
+   */
+  async viewMenu(serve) {
+    const menu = await Menu.instance();
+
+    return serve.json({menu: menu.items});
+  }
+
 
   /**
    * @param {import('pencl-router/src/Request/Serve')} serve 

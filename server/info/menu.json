@@ -1,8 +1,14 @@
 {
   "content": {
-    "label": "Content"
+    "title": "Content",
+    "path": "admin/content",
+    "id": "content",
+    "config": {}
   },
-  "content.entities": {
-    "generate": "generateEntities"
+  "schema": {
+    "title": "Schema",
+    "path": "admin/schema",
+    "id": "schema",
+    "config": {}
   }
 }

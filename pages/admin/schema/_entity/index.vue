@@ -1,10 +1,10 @@
 <template lang="pug">
   .page
-    h1 Schema: {{ schema.label }}
-
     LayoutContainer
-      template(v-slot:title)
-        h2 Bundles
+      template(#title)
+        h2 {{ schema.label }} Bundles
+      template(#controls)
+        MenuActions(:route="true")
       el-table(:data="bundles")
         el-table-column(prop="label", label="Label")
         el-table-column(prop="key", label="Key")

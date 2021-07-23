@@ -1,17 +1,17 @@
 <template lang="pug">
-  el-submenu.navi-item(v-if="item.items && item.items.length", :index="index", :popper-append-to-body="false")
+  el-submenu.navi-item(v-if="item.items", :index="item.id", :popper-append-to-body="false")
     template(slot="title")
       | {{ item.title }}
-    el-menu-item.navi-item(:index="index")
+    el-menu-item.navi-item(:index="item.id")
       | - {{ item.title }} -
-    MenuNavItem(v-for="item in item.items", :key="item.index", :item="item", :index="index + '/' + item.index")
-  el-menu-item.navi-item(v-else, :index="index")
+    MenuNavItem(v-for="item, key in item.items", :key="key", :item="item")
+  el-menu-item.navi-item(v-else, :index="item.id")
     | {{ item.title }}
 </template>
 
 <script>
 export default {
-  props: ['item', 'index'],
+  props: ['item'],
 }
 </script>
 
