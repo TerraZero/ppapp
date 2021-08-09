@@ -33,6 +33,10 @@ export default class Logger {
     return 'info';
   }
 
+  static get TYPE_NOTE() {
+    return 'note';
+  }
+
   /**
    * @param {string} channel 
    * @param {typeof import('./index').default} system 
@@ -104,6 +108,7 @@ export default class Logger {
         }
         break;
       case Logger.TYPE_INFO:
+      case Logger.TYPE_NOTE:
         break;
     }
     await this.system.store.dispatch('logs/add', log);
@@ -112,7 +117,7 @@ export default class Logger {
       const id = log.title + log.type;
 
       if (log.multi || this._register[id] === undefined) {
-        const notify = Notification[log.type]({
+        const notify = Notification[log.type === 'note' ? 'info' : log.type]({
           title: '[' + log.channel.toUpperCase() + ']: ' + log.title,
           message: log.message.join('\n'),
           duration: 0, //(log.type === Logger.TYPE_ERROR ? 0 : undefined),
@@ -193,6 +198,19 @@ export default class Logger {
       };
     }
     return this.execute(this.create(Logger.TYPE_INFO, log));
+  }
+
+  /**
+   * @param {(T_Log|string)} log
+   * @returns {T_Log}
+   */
+  note(log = {}) {
+    if (typeof log === 'string') {
+      log = {
+        message: [log],
+      };
+    }
+    return this.execute(this.create(Logger.TYPE_NOTE, log));
   }
 
 }

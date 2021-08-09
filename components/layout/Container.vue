@@ -6,6 +6,11 @@
           | {{ title }}
       .layout-container__controls(v-if="$slots['controls']")
         slot(name="controls")
+    .layout-container__filters(v-if="$slots['filters']")
+      .layout-container__filters-form
+        slot(name="filters")
+      .layout-container__expander(@click="open = !open")
+        i(:class="open ? 'el-icon-caret-top' : 'el-icon-caret-bottom'")
     .layout-container__content(v-loading="loading")
       slot
     .layout-container__actions(v-if="$slots['actions']")
@@ -15,6 +20,11 @@
 <script>
 export default {
   props: ['title', 'type', 'loading', 'small'],
+  data() {
+    return {
+      open: false,
+    };
+  },
   computed: {
     classes() {
       const classes = [];
@@ -24,6 +34,9 @@ export default {
         classes.push('layout-container--small');
       } else {
         classes.push('layout-container--box');
+      }
+      if (this.open) {
+        classes.push('layout-container--filters-open');
       }
       return classes;
     },
@@ -72,4 +85,44 @@ export default {
   &__actions
     text-align: right
     padding: 10px
+
+  &__filters
+    height: 5px
+    overflow: hidden
+    transition: height .3s ease-in-out
+
+  &__filters:hover,
+  &__header:hover + &__filters
+    height: 28px
+
+  &--filters-open &__filters,
+  &--filters-open &__filters:hover,
+  &--filters-open &__header:hover + &__filters
+    height: auto
+
+  &__filters-form
+    display: grid
+    grid-template-columns: 1fr 1fr 1fr
+    grid-gap: 10px
+    box-sizing: border-box
+    overflow: hidden
+    background: #e4f1ff
+    height: 0
+
+  &--filters-open &__filters-form
+    height: auto
+    padding: 10px
+
+  &__expander
+    padding: 5px
+    text-align: center
+    border-bottom-right-radius: 10px
+    border-bottom-left-radius: 10px
+    background: #8cc5ff
+    cursor: pointer
+
+    &:hover
+      background: #d4e8ff
+    
+
 </style>
