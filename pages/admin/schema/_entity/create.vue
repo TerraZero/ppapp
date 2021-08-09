@@ -15,7 +15,7 @@
 import Form from '~/client/form/Form';
 import API from '~/client/api/API';
 
-const api = new API('/api');
+const api = API.create('/api');
 
 export default {
   layout: "admin",
@@ -33,8 +33,9 @@ export default {
       value.config = value.config || {};
       value.fields = value.fields || {};
 
-      await api.request('schema.create.entity.form.submit', value);
+      await api.request('schema.create.entity.form.submit', { entity: value.entity, value });
       this.loading = false;
+      api.gotoParent();
     },
   },
   async asyncData({ params }) {

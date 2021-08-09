@@ -1,28 +1,16 @@
 <template lang="pug">
 .content-create-page
-  LayoutList(:items="bundles")
-    template(#title)
-        h1 Create {{ label }}
-    template(#controls)
-      FormButton(icon="el-icon-close", text="Abort", @click.native="abort")
-    template(v-slot="props")
-      el-link(:underline="false", @click="create(props.index)")
-        | {{ props.item }} 
-        i.el-icon-arrow-right
-
+  EntityForm(:entity="params.entity", :bundle="params.bundle")
 </template>
 
 <script>
 import API from '~/client/api/API';
 
-const api = new API('/api');
+const api = API.create('/api');
 
 export default {
   layout: "admin",
   methods: {
-    abort() {
-      this.$router.push('/admin/content/' + this.params.entity);
-    },
     create(bundle) {
       this.$router.push('/admin/content/' + this.params.entity + '/new/' + bundle);
     },

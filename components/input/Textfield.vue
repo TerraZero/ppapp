@@ -1,8 +1,8 @@
 <template lang="pug">
   .input-textfield(:style="getStyles()")
-    InputDecorate(:field="field", :name="name", :value="value", :ident="ident", @addItem="addItem", @cleanItems="cleanItems", @removeItem="removeItem", :actions="{add: true, remove: true, clean: true}")
-      template(v-slot="{ value, index, ident }")
-        el-input.input-textfield__input(:id="ident", :value="value", @input="input($event, index)", :placeholder="field.placeholder", :suffix-icon="(field.mask ? 'el-icon-cpu' : '')")
+    InputDecorate(:field="field", :name="name", :value="value", :ident="ident", :config="config", @addItem="addItem", @cleanItems="cleanItems", @removeItem="removeItem", :actions="{add: true, remove: true, clean: true}")
+      template(v-slot="{ value, index, ident, disabled }")
+        el-input.input-textfield__input(:id="ident", :value="value", @input="input($event, index)", :placeholder="field.placeholder", :suffix-icon="(field.mask ? 'el-icon-cpu' : '')", :disabled="disabled")
     el-divider
 </template>
 
@@ -10,7 +10,7 @@
 import Form from '~/client/form/Form';
 
 export default {
-  props: ['field', 'value', 'name', 'ident'],
+  props: ['field', 'value', 'name', 'ident', 'config'],
   methods: {
     getStyles() {
       const styles = {};

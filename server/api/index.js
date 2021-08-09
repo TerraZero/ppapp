@@ -5,11 +5,18 @@ Core().booting(__dirname);
 import Serve from 'pencl-router/src/Request/Serve';
 import Router from 'pencl-router';
 
+import Form from './form/Form';
+import CreateBundleForm from './form/CreateBundleForm';
+
 import SchemaController from './controllers/knex/SchemaController';
 import RouterController from './controllers/router/RouterController';
 import ContentController from './controllers/knex/ContentController';
 import DisplayController from './controllers/knex/DisplayController';
 import UploadController from './controllers/system/UploadController';
+import MenuController from './controllers/router/MenuController';
+import FormController from './controllers/system/FormController';
+
+Form.addForm(CreateBundleForm);
 
 const manager = Router().manager;
 
@@ -21,6 +28,8 @@ manager.addController(new RouterController());
 manager.addController(new ContentController());
 manager.addController(new DisplayController());
 manager.addController(new UploadController());
+manager.addController(new MenuController());
+manager.addController(new FormController());
 
 console.log(Router().config);
 

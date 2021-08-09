@@ -44,6 +44,10 @@ export default class FormInputType {
     }
   }
 
+  getItems(definition) {
+    return null;
+  }
+
   getTemplate(definition, value, index) {}
 
 }

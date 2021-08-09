@@ -30,12 +30,14 @@ export default class SchemaController extends ControllerBase {
   initRoutes(builder) {
     builder.namespace('schema');
     builder.create('create.entity', 'create/entity', this.createEntity).checkPOST();
-    builder.create('create.entity.form', 'create/entity/:entity/form', this.createEntityForm).checkGET();
-    builder.create('create.entity.form.submit', 'create/entity/:entity/form', this.createEntityFormSubmit).checkPOST();
+    builder.create('create.entity.form.submit', 'create/entity/:entity/form/submit(/:bundle)', this.createEntityFormSubmit).checkPOST();
+    builder.create('create.entity.form', 'create/entity/:entity/form(/:bundle)', this.createEntityForm).checkPOST();
     builder.create('create.entity.field', 'create/entity/field', this.createEntityField).checkPOST();
     builder.create('create.field', 'create/field', this.createField).checkPOST();
+    builder.create('view.field.list', 'view/fields/list', this.viewFieldsList).checkGET();
     builder.create('view.field', 'view/fields(/:field)', this.viewField).checkGET();
     builder.create('view', 'view(/:entity(/:bundle(/:field)))', this.viewSchema).checkGET();
+    builder.create('delete', 'delete/:entity(/:bundle)', this.deleteSchema).checkGET();
   }
 
   /**
@@ -61,12 +63,20 @@ export default class SchemaController extends ControllerBase {
    * @param {import('pencl-router/src/Request/Serve')} serve 
    */
   async createEntityForm(serve) {
+    const schemas = Knex().schemas;
     const entity = serve.BAG.entity;
-    const type = Knex().schemas.getEntityType(entity);
+    const config = serve.FORM.getValue('config', {});
+    const type = schemas.getEntityType(entity);
 
     const form = {};
 
-    type.formSchemaBundle(form);
+    type.formSchemaBundle(form, config);
+    if (serve.BAG.bundle) {
+      const entitytype = schemas.getEntity(entity, serve.BAG.bundle);
+
+      entitytype.definition.formInstanceFields(entitytype, form, config);
+      return serve.json({ form, schema: entitytype.entityschema.data });
+    }
 
     return serve.json({ form });
   }
@@ -75,15 +85,23 @@ export default class SchemaController extends ControllerBase {
    * @param {import('pencl-router/src/Request/Serve')} serve 
    */
   async createEntityFormSubmit(serve) {
-    const entity = serve.BAG.entity;
-    const type = Knex().schemas.getEntityType(entity);
-
-    const form = {};
-
-    type.formSchemaBundle(form);
+    const schemas = Knex().schemas;
     const value = await serve.FORM.getValue('value');
 
-    return serve.json({ form, value });
+    if (serve.BAG.bundle) {
+      const schema = schemas.getSchema('entity', serve.BAG.entity + '.' + serve.BAG.bundle);
+      
+      for (const index in schema.schema) {
+        schema.schema[index] = value[index] === undefined ? schema.schema[index] : value[index];
+      }
+      schemas.saveSchema(schema);
+      return serve.json({ schema, value });
+    } else {
+      const schema = schemas.createEntity(value.entity, value.bundle, value.label, value.config, value.fields);
+
+      serve.addMeta('events', ['rebuild', {menu: true}]);
+      return serve.json({ schema, value });
+    }
   }
 
   /**
@@ -146,6 +164,7 @@ export default class SchemaController extends ControllerBase {
     } else if (serve.BAG.entity && serve.BAG.bundle) {
       const entity = Schemas.getEntity(serve.BAG.entity, serve.BAG.bundle);
 
+      schema.entitylabel = entity.label;
       schema.label = entity.bundlelabel;
       schema.storage = entity.entityschema.data;
       schema.props = {};
@@ -193,6 +212,55 @@ export default class SchemaController extends ControllerBase {
       }
     }
     return serve.json(schema);
+  }
+
+  /**
+   * @param {import('pencl-router/src/Request/Serve')} serve 
+   */
+  async viewFieldsList(serve) {
+    /** @type {import('pencl-knex/src/SchemaManager')} */
+    const Schemas = Knex().schemas;
+
+    const fields = {};
+    for (const name in Schemas.getFieldTypes()) {
+      const type = Schemas.getFieldTypes()[name];
+      const storageform = {};
+      const instanceform = {};
+
+      type.formSchemaField(storageform);
+      type.formInstanceField(instanceform);
+
+      fields[type.type] = {
+        name: name,
+        type: type.type,
+        label: type.name,
+        storage: storageform,
+        instance: instanceform,
+      };
+    }
+    return serve.json({fields});
+  }
+
+  /**
+   * @param {import('pencl-router/src/Request/Serve')} serve 
+   */
+  async deleteSchema(serve) {
+    const entity = Knex().schemas.getEntity(serve.BAG.entity, serve.BAG.bundle);
+
+    const result = await Knex().query(async (connection) => {
+      for (const field of entity.getFields()) {
+        const del = connection({'field': entity.getField(field).table});
+        del.innerJoin({'entity': entity.table}, 'entity.id', 'field.id');
+        del.where('entity.bundle', entity.bundle);
+        await del.del();
+      }
+      await connection(entity.table).where('bundle', entity.bundle).del();
+    });
+
+    Knex().schemas.deleteSchema(entity.entityschema);
+
+    serve.addMeta('events', ['rebuild', {menu: true}]);
+    return serve.json({storage: result.result, schema: entity.entityschema.data});
   }
 
 }

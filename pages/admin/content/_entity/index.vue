@@ -2,7 +2,7 @@
 .content-list-page
   LayoutContainer
     template(#title)
-      h1 List {{ label }}
+      MenuTitle
     template(#controls)
       .content-list-page__actions
         el-input(placeholder="Search", prefix-icon="el-icon-search", :value="search" @input="input('search', $event)")
@@ -25,7 +25,7 @@
 <script>
 import API from '~/client/api/API';
 
-const api = new API('/api');
+const api = API.create('/api');
 
 export default {
   layout: "admin",
@@ -67,9 +67,10 @@ export default {
     action(row, op) {
       switch (op) {
         case 'view':
-          this.$router.push('/' + row.entity + '/' + row.id);
+          api.gotoMenuItem('site.view', {entity: row.entity, id: row.id});
           break;
         default:
+
           this.$router.push('/admin/content/' + row.entity + '/' + row.id + '/' + op);
           break;
       }

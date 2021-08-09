@@ -1,6 +1,5 @@
 <template lang="pug">
-  .content-edit-page
-    EntityForm(:entity="params.entity", :id="params.id", :page="true")
+  EntityForm(:entity="params.entity", :id="params.id", :page="true")
 </template>
 
 <script>

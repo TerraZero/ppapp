@@ -20,7 +20,7 @@
 <script>
 import API from '~/client/api/API';
 
-const api = new API('/api');
+const api = API.create('/api');
 
 export default {
   props: ['field', 'value', 'name', 'ident'],

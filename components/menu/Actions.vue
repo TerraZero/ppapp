@@ -12,7 +12,7 @@ import API from '~/client/api/API';
 const api = API.create('/api');
 
 export default {
-  props: ['route'],
+  props: ['route', 'type'],
   data() {
     return {
       actions: null,
@@ -20,7 +20,7 @@ export default {
     };
   },
   async mounted() {
-    this.actions = await api.getMenuActions(this.current.id, 'action');
+    this.actions = await api.getMenuActions(this.current.id, this.type);
   },
   methods: {
     handle(item) {

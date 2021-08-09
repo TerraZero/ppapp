@@ -5,17 +5,19 @@
   "config": {},
   "fields": {
     "title": {
+      "label": "",
       "cardinality": 1,
-      "trim": " []"
+      "trim": " ..."
     },
     "title_2": {
-      "cardinality": 0,
-      "trim": " []"
+      "label": "",
+      "cardinality": 1,
+      "trim": " ..."
     },
     "text": {
-      "cardinality": 2,
-      "trim": " []",
-      "label": "Feld Text"
+      "label": "",
+      "cardinality": 1,
+      "trim": " ..."
     }
   },
   "_type": "entity",

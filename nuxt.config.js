@@ -27,7 +27,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '@/plugins/element-ui',
-    { src: '@/plugins/client/router', ssr: false },
+    { src: '@/plugins/client/error', ssr: false, mode: 'client' },
+    { src: '@/plugins/client/api', ssr: false },
   ],
 
   serverMiddleware: [
@@ -58,4 +59,14 @@ export default {
   server: {
     host: "0.0.0.0",
   },
+
+  router: {
+    middleware: 'router'
+  },
+
+  hooks: {
+    error(nuxt, error) {
+      console.log(error);
+    }
+  }
 }

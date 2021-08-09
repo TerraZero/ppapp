@@ -1,3 +1,4 @@
+import Reflection from 'pencl-kit/src/Util/Reflection';
 import FormInputTextfield from './FormInputTextfield';
 import FormInputBoolean from './FormInputBoolean';
 import FormInputList from './FormInputList';
@@ -38,43 +39,55 @@ export default class Form {
     }
   }
 
-  static getState(definition, value = {}) {
+  /**
+   * @param {import('pencl-knex/types').T_Form} form 
+   * @param {Object} value 
+   * @returns {Object}
+   */
+  static getState(form, value = {}) {
     const state = {};
 
-    for (const name in definition) {
-      const field = definition[name];
+    for (const name in form) {
+      const field = form[name];
       const type = this.getType(field.type);
 
       if (type === null) continue;
       type.prepareDefinition(field);
       
-      state[name] = type.getState(field, value[name]);
+      if (field.mount === undefined) {
+        state[name] = type.getState(field, value[name] === undefined ? (field.fallback === undefined ? null : field.fallback) : value[name]);
+      } else {
+        state[name] = type.getState(field, Reflection.getDeep(value, field.mount, (field.fallback === undefined ? null : field.fallback)));
+      }
     }
     return state;
   }
 
-  static getValue(definition, state) {
+  /**
+   * @param {import('pencl-knex/types').T_Form} form 
+   * @param {Object} state 
+   * @returns {Object}
+   */
+  static getValue(form, state) {
     const value = {};
 
-    for (const name in definition) {
-      const field = definition[name];
+    for (const name in form) {
+      const field = form[name];
       const type = this.getType(field.type);
 
       if (type === null) continue;
 
-      value[name] = type.getValue(field, state[name]);
+      if (field.mount === undefined) {
+        value[name] = type.getValue(field, state[name]);
+      } else {
+        Reflection.setDeep(value, field.mount, type.getValue(field, state[name]));
+      }
     }
     return value;
   }
 
   /**
-   * @typedef {Object} T_MaskItem
-   * @property {string} regex
-   * @property {string} replace
-   */
-
-  /**
-   * @param {T_MaskItem[]} mask 
+   * @param {import('pencl-knex/types').T_FormMask} mask 
    * @param {string} value 
    * @returns {string}
    */
@@ -83,6 +96,64 @@ export default class Form {
       value = value.replace(new RegExp(item.regex, 'g'), item.replace);
     }
     return value;
+  }
+
+  /**
+   * @param {Vue} mount
+   * @param {import('../api/API').default} api
+   * @param {import('pencl-knex/types').T_Form} form 
+   * @param {Object} values 
+   * @param {Array} results 
+   */
+  static doResults(mount, api, form, values, results) {
+    const events = [];
+
+    for (const result of results) {
+      switch (result.type) {
+        case 'message': 
+          mount.$message(result.info);
+          break;
+        case 'notify':
+          const notify = mount.$notify({
+            customClass: 'el-notification--' + result.info.type,
+            onClick: () => {
+              notify.close();
+            },
+            showClose: false,
+            ...result.info,
+          });
+          break;
+        case 'event':
+          events.push(result.info.event);
+          break;
+      }
+    }
+
+    if (events.length) {
+      api.doEvents(events, { mount, api, form, values, results });
+    }
+  }
+
+  /**
+   * @param {import('pencl-knex/types').T_Form} form 
+   * @param {function} callback 
+   * @param {Object} info
+   */
+  static forField(form, callback, info = {}) {
+    for (const name in form) {
+      const field = form[name];
+      const type = this.getType(field.type);
+      const items = type.getItems(field);
+
+      (info.ident = [...(info.ident || [])]).push(name);
+      info.id = name;
+
+      if (items !== null) {
+        this.forField(items, callback, info);
+      }
+
+      callback(field, info);
+    }
   }
 
 }

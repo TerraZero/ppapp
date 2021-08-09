@@ -2,9 +2,7 @@
 .entity-form
   LayoutContainer
     template(#title)
-      h1(v-if="page") {{ title }}
-      h2(v-else) {{ title }}
-    EntityInfo(v-if="data", :data="data")
+      MenuTitle
     component(v-if="data", v-for="prop, name in props", :key="name", :is="display.props[name].widget", :display="display.props[name]", :prop="prop", :value="getValue('prop', prop)", @input="doInput('prop', prop, $event)")
     component(v-if="data", v-for="field, key in fields", :key="key", :is="display.fields[field.storage.field].widget", :display="display.fields[field.storage.field]", :field="field", :value="getValue('field', field)", @input="doInput('field', field, $event)")
     .entity-form__actions
@@ -16,11 +14,11 @@
 <script>
 import API from '~/client/api/API';
 
-const api = new API('/api');
+const api = API.create('/api');
 
 export default {
   props: ['entity', 'bundle', 'id', 'page'],
-  mounted() {
+  async mounted() {
     this.update();
   },
   data() {
@@ -31,18 +29,10 @@ export default {
       fields: [],
       display: null,
       loading: false,
+      title: null,
     };
   },
   computed: {
-    title() {
-      if (this.mode === 'edit') {
-        if (this.schema !== null) {
-          return 'Edit ' + this.schema.label + ' ' + this.id;
-        }
-      } else {
-        return 'Create new ' + this.bundle;
-      }
-    },
     props() {
       let props = {};
       if (this.schema !== null) {

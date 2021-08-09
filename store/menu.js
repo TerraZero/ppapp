@@ -1,19 +1,30 @@
+import System from '~/client/system';
 import API from '~/client/api/API';
 
-const api = new API('/api');
+const api = API.create('/api');
+const trigger = System.trigger();
 
 export const state = () => ({
   current: null,
+  route: null,
 });
 
 export const mutations = {
-  async current(state, current) {
+  route(state, route) {
+    state.route = route;
+  },
+
+  current(state, current) {
     state.current = current;
-  }
+  },
 }
 
 export const actions = {
   async setCurrent(context, current) {
-    context.commit('current', await api.searchMenuItem(current.path));
-  }
+    const item =  await api.searchMenuItem(current.path);
+
+    context.commit('route', current);
+    context.commit('current', item);
+    await trigger('goto', item);
+  },
 }

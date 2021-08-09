@@ -1,14 +1,16 @@
 <template lang="pug">
   .page
     LayoutContainer
-      template(v-slot:title)
-        h2 {{ schema.label }} storage
+      template(#title)
+        MenuTitle
+      template(#controls)
+        MenuBack(label="Back")
       el-table(:data="storage")
         el-table-column(prop="prop", label="Property")
         el-table-column(prop="value", label="Value")
 
     LayoutContainer
-      template(v-slot:title)
+      template(#title)
         h2 {{ schema.label }} property
       el-table(:data="property")
         el-table-column(prop="name", label="Name")
@@ -20,8 +22,9 @@
               el-table-column(prop="value")
 
     LayoutContainer
-      template(v-slot:title)
+      template(#title)
         h2 {{ schema.label }} fields
+      template(#controls)
       el-table(:data="fields")
         el-table-column(prop="label", label="Label")
         el-table-column(prop="key", label="Key")
@@ -41,7 +44,7 @@
 <script>
 import API from '~/client/api/API';
 
-const api = new API('/api');
+const api = API.create('/api');
 
 export default {
   layout: "admin",

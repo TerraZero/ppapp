@@ -5,7 +5,7 @@ import Knex from 'pencl-knex';
 import Dayjs from 'dayjs';
 import FileUtil from 'pencl-kit/src/Util/FileUtil';
 
-export default class SchemaController extends ControllerBase {
+export default class UploadController extends ControllerBase {
 
   /**
    * @param {import('pencl-router/src/Builder/RouteBuilder')} builder

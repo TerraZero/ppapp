@@ -1,5 +1,8 @@
 import Axios from 'axios';
 import RouteParser from 'route-parser';
+import PromiseEvents from 'promise-events';
+import Reflection from 'pencl-kit/src/Util/Reflection';
+import System from '../system';
 
 export default class API {
 
@@ -17,8 +20,16 @@ export default class API {
 
   constructor(mount) {
     this.mount = mount;
+    this.trigger = System.trigger(this);
+
     this._routes = null;
-    this._menu = null;
+
+    System.instance.handler.on('rebuild', async ({ rebuild }) => {
+      if (rebuild.routes) {
+        this._routes = null;
+      }
+    });
+    this.logger = System.logger('API');
   }
 
   async routes() {
@@ -32,21 +43,23 @@ export default class API {
    * @returns {Object<string, T_MenuItem>}
    */
   async menu() {
-    if (this._menu === null) {
-      this._menu = (await this.request('router.menu')).content.menu;
-    }
-    return this._menu;
+    return {};
   }
 
   /**
    * @typedef {Object} T_MenuItem
    * @property {string} title
-   * @property {string} path
+   * @property {string} [path]
+   * @property {string} [pattern]
    * @property {string} id
    * @property {Object} config
    * @property {string} config.type
    * @property {string} config.icon
    * @property {string} config.category
+   * @property {Object} config.load
+   * @property {string} config.load.request
+   * @property {Object} config.load.params
+   * @property {boolean} config.hide
    * @property {Object<string, T_MenuItem>} items
    */
 
@@ -63,15 +76,55 @@ export default class API {
     for (const part of parts) {
       menu = menu[part].items;
     }
-    return menu[last];
+    return menu[last] || null;
   }
 
-  async getMenuPath(id = null) {
-    return (await this.getMenuItem(id)).path;
+  getCurrentRoute() {
+    return this.constructor.store.state.menu.route;
   }
 
-  async gotoMenuItem(id) {
-    this.constructor.router.push('/' + await this.getMenuPath(id));
+  async getCurrentMenuItem() {
+    if (this.constructor.store.state.menu.current === null) {
+      const path = this.getCurrentRoute().path;
+
+      return await this.searchMenuItem(path);
+    } else {
+      return this.constructor.store.state.menu.current;
+    }
+  }
+
+  async getMenuParams(id = null) {
+    if (id === null) id = (await this.getCurrentMenuItem()).id;
+    const item = await this.getMenuItem(id);
+
+    if (typeof item.pattern === 'string') {
+      const pattern = new RouteParser(item.pattern);
+
+      return pattern.match(this.getCurrentRoute().path.substring(1));
+    }
+    return {};
+  }
+
+  async getMenuPath(id = null, params = null) {
+    const item = await this.getMenuItem(id);
+
+    if (typeof item.pattern === 'string') {
+      if (params === null) params = await this.getMenuParams(id);
+      const pattern = new RouteParser(item.pattern);
+      return pattern.reverse(params);
+    }
+    return item.path;
+  }
+
+  async gotoMenuItem(id, params = {}) {
+    this.constructor.router.push('/' + await this.getMenuPath(id, params));
+  }
+
+  async gotoParent(id = null) {
+    if (id === null) id = this.constructor.store.state.menu.current.id;
+    const parts = id.split('.');
+    parts.pop();
+    await this.gotoMenuItem(parts.join('.'));
   }
 
   /**
@@ -95,15 +148,46 @@ export default class API {
     return this._searchMenuItem(await this.menu(), path);
   }
 
+  async getMenuTitle(id = null) {
+    if (id === null) id = (await this.getCurrentMenuItem()).id;
+    const item = await this.getMenuItem(id);
+
+    if (item === null) return null;
+    if (item.config.load) {
+      let params = item.config.load.params || {};
+      if (item.pattern !== undefined) {
+        params = Reflection.merge(await this.getMenuParams(id), params);
+      }
+      const content = (await this.request(item.config.load.request, params)).content;
+      return Reflection.replaceCallback(item.title, (match) => {
+        return Reflection.getDeep(content, match);
+      });
+    } else {
+      return item.title || null;
+    }
+  }
+
   /**
    * @param {Object<string, T_MenuItem>} items
    * @param {string} path 
    */
   _searchMenuItem(items, path) {
     for (const name in items) {
+      if (typeof items[name].pattern === 'string') {
+        const pattern = new RouteParser(items[name].pattern);
+
+        if (pattern.match(path)) {
+          if (items[name].items !== undefined) {
+            const check = this._searchMenuItem(items[name].items, path);
+            if (check !== null) return check;
+          }
+          return items[name];
+        }
+      }
       if (items[name].path === path) return items[name];
-      if (path.startsWith(items[name].path) && items[name].items !== undefined) {
-        return this._searchMenuItem(items[name].items, path);
+      if (items[name].items !== undefined) {
+        const check = this._searchMenuItem(items[name].items, path);
+        if (check !== null) return check;
       }
     }
     return null;
@@ -128,13 +212,37 @@ export default class API {
     const match = (await this.routes())[route];
     const url = this.toUrl(match.pattern, params);
 
+    let response = null;
     switch (match.info.type) {
       case 'get':
-        return this.get(url, (route_data === undefined ? params : route_data === null ? {} : route_data));
+        response = await this.get(url, (route_data === undefined ? params : route_data === null ? {} : route_data));
+        break;
       case 'post':
-        return this.post(url, (route_data === undefined ? params : route_data === null ? {} : route_data));
+        response = await this.post(url, (route_data === undefined ? params : route_data === null ? {} : route_data));
+        break;
       default:
         break;
+    }
+
+    if (response && response.meta.error) {
+      this.logger.error({
+        message: response.meta.error.message,
+        error: response.meta.error.full,
+        context: {route, params, route_data},
+      });
+      return null;
+    }
+
+    if (response && response.meta.events) {
+      await this.doEvents(response.meta.events, { response });
+    }
+
+    return response;
+  }
+
+  async doEvents(events, info = {}) {
+    for (const event of events) {
+      await this.trigger(event.shift(), info, ...event);
     }
   }
 

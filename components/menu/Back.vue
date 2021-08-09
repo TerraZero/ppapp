@@ -8,21 +8,10 @@ import API from '~/client/api/API';
 const api = API.create('/api');
 
 export default {
-  props: ['label'],
-  data() {
-    return {
-      parent: null,
-      current: this.$store.state.menu.current,
-    };
-  },
-  async mounted() {
-    const parts = this.current.id.split('.');
-    parts.pop();
-    this.parent = await api.getMenuItem(parts.join('.'));
-  },
+  props: ['label', 'id'],
   methods: {
     handle() {
-      api.gotoMenuItem(this.parent.id);
+      api.gotoParent(this.id || null);
     },
   },
 }

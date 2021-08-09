@@ -1,29 +1,28 @@
 <template lang="pug">
-  .page
-    LayoutContainer
-      template(#title)
-        h2 {{ schema.label }} Bundles
-      template(#controls)
-        MenuActions(:route="true")
-      el-table(:data="bundles")
-        el-table-column(prop="label", label="Label")
-        el-table-column(prop="key", label="Key")
-        el-table-column(prop="ops", label="Operations")
-          template(slot-scope="props")
-            el-button(v-for="op in props.row.ops", :key="op.action", :type="op.type", :icon="'el-icon-' + op.action", circle, @click="action(props.row, op)")
+  LayoutContainer
+    template(#title)
+      MenuTitle
+    template(#controls)
+      MenuBack(label="Back")
+    el-table(:data="bundles")
+      el-table-column(prop="label", label="Label")
+      el-table-column(prop="key", label="Key")
+      el-table-column(prop="ops", label="Operations")
+        template(slot-scope="props")
+          el-button(v-for="op in props.row.ops", :key="op.action", :type="op.type", :icon="'el-icon-' + op.icon", circle, @click="action(props.row, op)")
 
 </template>
 
 <script>
 import API from '~/client/api/API';
 
-const api = new API('/api');
+const api = API.create('/api');
 
 export default {
   layout: "admin",
   methods: {
     action(row, op) {
-      this.$router.push('/admin/schema/' + this.entity + '/' + row.key + '/' + op.action);
+      api.gotoMenuItem('schema.' + this.entity + '.' + op.action);
     },
   },
   computed: {
@@ -37,15 +36,18 @@ export default {
           ops: [
             {
               type: 'primary',
-              action: 'view',
+              icon: 'view',
+              action: bundle,
             },
             {
               type: 'primary',
-              action: 'edit',
+              icon: 'edit',
+              action: bundle + '.edit',
             },
             {
               type: 'danger',
-              action: 'delete',
+              icon: 'delete',
+              action: bundle + '.delete',
             },
           ],
         });

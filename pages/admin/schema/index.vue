@@ -1,23 +1,19 @@
 <template lang="pug">
-  .page
-    h1 Schema
-
-    LayoutContainer
-      template(v-slot:title)
-        h2 Entities
-      el-table(:data="entities")
-        el-table-column(prop="label", label="Label")
-        el-table-column(prop="key", label="Key")
-        el-table-column(prop="ops", label="Operations")
-          template(slot-scope="props")
-            el-button(v-for="op in props.row.ops", :key="op.action", :type="op.type", :icon="'el-icon-' + op.action", circle, @click="action(props.row, op)")
-
+  LayoutContainer
+    template(v-slot:title)
+      MenuTitle
+    el-table(:data="entities")
+      el-table-column(prop="label", label="Label")
+      el-table-column(prop="key", label="Key")
+      el-table-column(prop="ops", label="Operations")
+        template(slot-scope="props")
+          el-button(v-for="op in props.row.ops", :key="op.action", :type="op.type", :icon="'el-icon-' + op.action", circle, @click="action(props.row, op)")
 </template>
 
 <script>
 import API from '~/client/api/API';
 
-const api = new API('/api');
+const api = API.create('/api');
 
 export default {
   layout: "admin",
@@ -55,7 +51,7 @@ export default {
   },
   async asyncData() {
     const schema = (await api.request('schema.view')).content;
-    console.log(schema);
+
     return { schema };
   }
 }

@@ -1,11 +1,12 @@
 <template lang="pug">
   .page
-    h1 Show "{{ params.entity }}:{{ params.id }}" [TODO]
+    h1 Delete Field Schema "{{ params.entity }}:{{ params.bundle }}" [TODO]
 
 </template>
 
 <script>
 export default {
+  layout: "admin",
   async asyncData({ params }) {
     return { params };
   }

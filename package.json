@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.1",
+    "@nuxtjs/composition-api": "^0.26.0",
     "core-js": "^3.9.1",
     "dayjs": "^1.10.6",
     "element-ui": "^2.15.2",
@@ -18,11 +19,13 @@
     "pencl-kit": "git+https://github.com/TerraZero/pencl-kit.git",
     "pencl-knex": "git+https://github.com/TerraZero/pencl-knex.git",
     "pencl-router": "git+https://github.com/TerraZero/pencl-router.git",
+    "promise-events": "^0.2.4",
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
     "route-parser": "0.0.5",
     "sass": "^1.35.1",
-    "sass-loader": "^10.1.1"
+    "sass-loader": "^10.1.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {}
 }

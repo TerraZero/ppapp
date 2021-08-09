@@ -1,14 +1,113 @@
-{
-  "content": {
+[
+  {
     "title": "Content",
+    "action": "Overview",
     "path": "admin/content",
-    "id": "content",
-    "config": {}
+    "id": "content"
   },
-  "schema": {
+  {
+    "title": "List {entity.label}",
+    "menu": "{entity.label}",
+    "action": "List {entity.label}",
+    "path": "admin/content/:entity",
+    "id": "content.list",
+    "parent": "content",
+    "generate": "entity"
+  },
+  {
+    "title": "Create {entity.label}",
+    "menu": false,
+    "breadcrumb": "Create",
+    "path": "admin/content/:entity/create",
+    "id": "content.create.list",
+    "parent": "content.list.{entity.key}",
+    "generate": "entity",
+    "type": "action"
+  },
+  {
+    "title": "Create {entity.label} - {bundle.label}",
+    "menu": "Create {bundle.label}",
+    "breadcrumb": "{bundle.label}",
+    "path": "admin/content/:entity/create/:bundle",
+    "id": "content.create",
+    "parent": "content.list.{entity.key}",
+    "generate": "entity.bundle"
+  },
+  {
+    "title": "Edit {bundle.label} - {id.label}",
+    "menu": false,
+    "path": "admin/content/:entity/:id/edit",
+    "id": "content.edit",
+    "parent": "content.list",
+    "type": "action",
+    "live": "id"
+  },
+  {
+    "title": "Delete {bundle.label} - {id.label}",
+    "menu": false,
+    "path": "admin/content/:entity/:id/edit",
+    "id": "content.edit",
+    "parent": "content.list",
+    "type": "action",
+    "danger": true,
+    "live": "id"
+  },
+  {
     "title": "Schema",
+    "action": "Overview",
     "path": "admin/schema",
-    "id": "schema",
-    "config": {}
+    "id": "schema"
+  },
+  {
+    "title": "{entity.label} Bundles",
+    "menu": "{entity.label}",
+    "action": "{entity.label} Bundles",
+    "path": "admin/schema/:entity",
+    "id": "schema.view",
+    "parent": "schema",
+    "generate": "entity"
+  },
+  {
+    "title": "Create {entity.label} Bundle",
+    "breadcrumb": "Create Bundle",
+    "path": "admin/schema/:entity/create",
+    "id": "schema.create",
+    "parent": "schema.view.{entity.key}",
+    "generate": "entity"
+  },
+  {
+    "title": "Create {entity.label} Bundle (Version 2)",
+    "breadcrumb": "Create Bundle (Version 2)",
+    "path": "admin/schema/:entity/create_two",
+    "id": "schema.create.two",
+    "parent": "schema.view.{entity.key}",
+    "generate": "entity"
+  },
+  {
+    "title": "Schema {bundle.label} ({entity.label})",
+    "menu": "{bundle.label}",
+    "action": "View {bundle.label}",
+    "path": "admin/schema/:entity/:bundle",
+    "id": "schema.view",
+    "parent": "schema.view.{entity.key}",
+    "generate": "entity.bundle"
+  },
+  {
+    "title": "System",
+    "action": "Overview",
+    "path": "admin/system",
+    "id": "system"
+  },
+  {
+    "title": "Logs",
+    "path": "admin/system/logs",
+    "id": "system.logs",
+    "parent": "system"
+  },
+  {
+    "menu": false,
+    "path": "admin/system/logs/:id",
+    "id": "system.logs.item",
+    "parent": "system.logs"
   }
-}
+]

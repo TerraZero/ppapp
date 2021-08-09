@@ -63,9 +63,9 @@ export default class ContentController extends ControllerBase {
    * @param {import('pencl-router/src/Request/Serve')} serve 
    */
   async viewContent(serve) {
-    const entity = await Knex().storage.load(serve.BAG.entity, serve.BAG.id, ...(serve.GET.params.fields || ['[all]']));
+    const entity = await Knex().storage.load(serve.BAG.entity, serve.BAG.id, ...((await serve.GET.getField('fields')) || ['[all]']));
 
-    return serve.json({ entity: entity.data });
+    return serve.json({ entity: entity.data, schema: entity.schemadata });
   }
 
   /**
