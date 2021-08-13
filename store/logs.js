@@ -13,6 +13,12 @@ export const mutations = {
   see(state, log) {
     log.isNew = false;
   },
+
+  seeAll(state) {
+    for (const log of state.logs) {
+      log.isNew = false;
+    }
+  },
 }
 
 export const actions = {

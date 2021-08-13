@@ -46,8 +46,14 @@ export default {
     });
     
     if (log === undefined) {
-      logger.warning('Log not found with id "' + params.id + '"');
+      logger.warning({
+        message: 'Log not found with id "{params.id}"',
+        context: {
+          params,
+        },
+      });
       redirect(302, '/admin/system/logs');
+      return;
     }
 
     store.commit('logs/see', log);

@@ -1,4 +1,5 @@
 import { Notification } from 'element-ui';
+import Reflection from 'pencl-kit/src/Util/Reflection';
 
 /**
  * @typedef {Object} T_Log
@@ -71,6 +72,20 @@ export default class Logger {
     if (!log.title) {
       log.title = log.message.shift();
     }
+
+    if (log.context && log.message) {
+      for (const index in log.message) {
+        log.message[index] = Reflection.replaceCallback(log.message[index], (key) => {
+          return Reflection.getDeep(log.context, key);
+        });
+      }
+    }
+    if (log.title) {
+      log.title = Reflection.replaceCallback(log.title, (key) => {
+        return Reflection.getDeep(log.context, key);
+      });
+    }
+
     if (log.store === undefined) {
       log.store = true;
     }

@@ -4,15 +4,17 @@
       .layout-container__title(v-if="$slots['title'] || title")
         slot(name="title")
           | {{ title }}
-      .layout-container__controls(v-if="$slots['controls']")
+      .layout-container__controls(v-if="$slots['controls'] || $slots['filters']")
         slot(name="controls")
+        .layout-container__expander(@click="open = !open")
+          i.el-icon-s-operation
     .layout-container__filters(v-if="$slots['filters']")
       .layout-container__filters-form
         slot(name="filters")
-      .layout-container__expander(@click="open = !open")
-        i(:class="open ? 'el-icon-caret-top' : 'el-icon-caret-bottom'")
     .layout-container__content(v-loading="loading")
       slot
+    .layout-container__pager
+      slot(name="pager")
     .layout-container__actions(v-if="$slots['actions']")
       slot(name="actions")
 </template>
@@ -34,6 +36,9 @@ export default {
         classes.push('layout-container--small');
       } else {
         classes.push('layout-container--box');
+      }
+      if (this.$slots['filters']) {
+        classes.push('layout-container--has-filters');
       }
       if (this.open) {
         classes.push('layout-container--filters-open');
@@ -67,6 +72,10 @@ export default {
     background: #DCDFE6
     border-top-right-radius: 4px
     border-top-left-radius: 4px
+    position: relative
+
+  &--has-filters &__header
+    padding-right: 66px
 
   &--small &__header
     background: #909399
@@ -91,13 +100,7 @@ export default {
     overflow: hidden
     transition: height .3s ease-in-out
 
-  &__filters:hover,
-  &__header:hover + &__filters
-    height: 28px
-
-  &--filters-open &__filters,
-  &--filters-open &__filters:hover,
-  &--filters-open &__header:hover + &__filters
+  &--filters-open &__filters
     height: auto
 
   &__filters-form
@@ -114,15 +117,24 @@ export default {
     padding: 10px
 
   &__expander
-    padding: 5px
-    text-align: center
-    border-bottom-right-radius: 10px
-    border-bottom-left-radius: 10px
+    display: flex
+    justify-content: center
+    align-items: center
+    padding: 20px
+    position: absolute
+    top: 0
+    right: 0
+    bottom: 0
     background: #8cc5ff
     cursor: pointer
+    border-top-right-radius: 4px
 
     &:hover
       background: #d4e8ff
     
+  &__pager
+    display: flex
+    justify-content: center
+    padding: 10px
 
 </style>
