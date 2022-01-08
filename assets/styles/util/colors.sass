@@ -1,0 +1,96 @@
+@use "sass:map"
+
+$editor: ()
+$editor: map.set($editor, 'control', #333333)
+$editor: map.set($editor, 'sidebar', #252526)
+$editor: map.set($editor, 'background', #1e1e1e)
+$editor: map.set($editor, 'formfield', #a0a2a1)
+$editor: map.set($editor, 'formfield-hover', #bdbdbd)
+$editor: map.set($editor, 'dark-background', #181819)
+$editor: map.set($editor, 'border', #0f0f10)
+$editor: map.set($editor, 'state-error', #fd0130)
+$editor: map.set($editor, 'formframe', #3c3c3c)
+$editor: map.set($editor, 'formfield-disabled', #2e2e2e)
+
+$white: ()
+$white: map.set($white, 'border', #dfe2e2)
+$white: map.set($white, 'color', white)
+$white: map.set($white, 'input-background', #dfe2e23F)
+$white: map.set($white, 'background', white)
+
+$blue: ()
+$blue: map.set($blue, 'border', #0296aa)
+$blue: map.set($blue, 'color', map.get($white, 'color'))
+$blue: map.set($blue, 'input-background', #0296aa4F)
+$blue: map.set($blue, 'background', #02d7f2)
+$blue: map.set($blue, 'hover-background', #33e7ff)
+$blue: map.set($blue, 'deco-main', #02d7f2)
+$blue: map.set($blue, 'deco-sub', #ffee08)
+$blue: map.set($blue, 'dark-background', #0296aa)
+
+$red: ()
+$red: map.set($red, 'border', #c90126)
+$red: map.set($red, 'color', map.get($white, 'color'))
+$red: map.set($red, 'input-background', #c901264F)
+$red: map.set($red, 'background', #fd0130)
+$red: map.set($red, 'hover-background', #ff1b45)
+$red: map.set($red, 'deco-main', #fd0130)
+$red: map.set($red, 'deco-sub', #a1001e)
+$red: map.set($red, 'dark-background', #8b0820)
+
+$orange: ()
+$orange: map.set($orange, 'background', #f4810a)
+
+$yellow: ()
+$yellow: map.set($yellow, 'background', #ffee08)
+$yellow: map.set($yellow, 'border', #ffee08)
+$yellow: map.set($yellow, 'color', #010101)
+$yellow: map.set($yellow, 'input-background', #ffee084F)
+$yellow: map.set($yellow, 'deco-main', #ffee08)
+$yellow: map.set($yellow, 'deco-sub', map.get($blue, 'background'))
+$yellow: map.set($yellow, 'dark-background', #c7ba0d)
+
+$black: ()
+$black: map.set($black, 'background', #1c1c1c)
+$black: map.set($black, 'light-background', #2c2c2c)
+$black: map.set($black, 'hover-background', #3c3c3c)
+$black: map.set($black, 'border', #010101)
+$black: map.set($black, 'color', #0296aa)
+$black: map.set($black, 'input-background', #0101014F)
+$black: map.set($black, 'deco-main', #ffee08)
+$black: map.set($black, 'deco-sub', map.get($blue, 'background'))
+$black: map.set($black, 'dark-background', #010101)
+
+$themes: ()
+$themes: map.set($themes, 'white', $white)
+$themes: map.set($themes, 'blue', $blue)
+$themes: map.set($themes, 'red', $red)
+$themes: map.set($themes, 'orange', $orange)
+$themes: map.set($themes, 'yellow', $yellow)
+$themes: map.set($themes, 'black', $black)
+$themes: map.set($themes, 'editor', $editor)
+
+@mixin colors__theme_background($theme: $white)
+  background: map.get($theme, 'background')
+  --colors--themed-background-color: #{map.get($theme, 'color')}
+
+@mixin colors__theme_input($component, $item, $default: $blue)
+  #{$component} #{$component}__#{$item}
+    transition: all .3s ease-in-out
+    background: var(--colors--input-background)
+    border: 1px solid var(--colors--border)
+    color: var(--colors--themed-background-color, var(--colors--color))
+
+@mixin colors__themeable
+  @each $theme, $list in $themes
+    &--#{$theme}
+      @each $prop, $value in $list
+        --colors--#{$prop}: #{$value}
+
+@function colors($theme: 'blue', $prop: 'background')
+  @return var(--colors--#{$theme}-#{$prop})
+  
+body
+  @each $theme, $list in $themes
+    @each $prop, $value in $list
+      --colors--#{$theme}-#{$prop}: #{$value}

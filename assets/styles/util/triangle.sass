@@ -1,0 +1,57 @@
+@mixin triangle__top_left($size_a, $size_b, $color)
+  width: 0
+  height: 0
+  border-style: solid
+  border-width: #{$size_a} #{$size_b} 0 0
+  border-color: #{$color} transparent transparent transparent
+
+@mixin triangle__bottom_left($size_a, $size_b, $color)
+  width: 0
+  height: 0
+  border-style: solid
+  border-width: #{$size_a} 0 0 #{$size_b}
+  border-color: transparent transparent transparent #{$color}
+  
+@mixin triangle__top_right($size_a, $size_b, $color)
+  width: 0
+  height: 0
+  border-style: solid
+  border-width: 0 #{$size_a} #{$size_b} 0
+  border-color: transparent #{$color} transparent transparent
+
+@mixin triangle__bottom_right($size_a, $size_b, $color)
+  width: 0
+  height: 0
+  border-style: solid
+  border-width: 0 0 #{$size_a} #{$size_b}
+  border-color: transparent transparent #{$color} transparent
+
+@mixin triangle__top_bottom_right($size_a, $size_b, $color)
+  &:before
+    content: ''
+    position: absolute
+    bottom: 100%
+    right: 0
+    @include triangle__bottom_right($size_a, $size_b, $color)
+  
+  &:after
+    content: ''
+    position: absolute
+    top: 100%
+    right: 0
+    @include triangle__top_right($size_a, $size_b, $color)
+
+@mixin triangle__top_bottom_left($size_a, $size_b, $color)
+  &:before
+    content: ''
+    position: absolute
+    bottom: 100%
+    left: 0
+    @include triangle__bottom_left($size_a, $size_b, $color)
+  
+  &:after
+    content: ''
+    position: absolute
+    top: 100%
+    left: 0
+    @include triangle__top_left($size_a, $size_b, $color)

@@ -4,6 +4,18 @@
   </div>
 </template>
 
+<script>
+export default {
+  mounted() {
+    window.onresize = () => {
+      document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+    };
+    window.onresize();
+  },
+}
+</script>
+
+
 <style>
 html {
   font-family:

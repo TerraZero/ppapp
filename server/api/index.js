@@ -15,6 +15,9 @@ import DisplayController from './controllers/knex/DisplayController';
 import UploadController from './controllers/system/UploadController';
 import MenuController from './controllers/router/MenuController';
 import FormController from './controllers/system/FormController';
+import MapController from './controllers/editor/MapController';
+import CardController from './controllers/editor/CardController';
+import MediaController from './controllers/editor/MediaController';
 
 Form.addForm(CreateBundleForm);
 
@@ -30,6 +33,9 @@ manager.addController(new DisplayController());
 manager.addController(new UploadController());
 manager.addController(new MenuController());
 manager.addController(new FormController());
+manager.addController(new MapController());
+manager.addController(new CardController());
+manager.addController(new MediaController());
 
 console.log(Router().config);
 

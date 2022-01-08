@@ -1,0 +1,12 @@
+{
+  "heli": {
+    "howler": {
+      "src": ["/sounds/heli.mp3"]
+    }
+  },
+  "rain": {
+    "howler": {
+      "src": ["/sounds/rain.mp3"]
+    }
+  }
+}

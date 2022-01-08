@@ -1,5 +1,6 @@
 import PromiseEvents from 'promise-events';
 import Logger from './Logger';
+import SoundSystem from './SoundSystem';
 
 export default class System {
 
@@ -54,6 +55,14 @@ export default class System {
     return async (event, ...args) => {
       System.instance.handler.emit(event, ...args, context);
     };
+  }
+
+  /** @returns {SoundSystem} */
+  static get sounds() {
+    if (this._sound_instance === undefined) {
+      this._sound_instance = new SoundSystem(this);
+    }
+    return this._sound_instance;
   }
 
   constructor() {

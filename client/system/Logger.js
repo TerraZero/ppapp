@@ -135,7 +135,7 @@ export default class Logger {
         const notify = Notification[log.type === 'note' ? 'info' : log.type]({
           title: '[' + log.channel.toUpperCase() + ']: ' + log.title,
           message: log.message.join('\n'),
-          duration: 0, //(log.type === Logger.TYPE_ERROR ? 0 : undefined),
+          duration: (log.type === Logger.TYPE_ERROR ? 0 : undefined),
           customClass: 'el-notification--' + log.type,
           onClick: () => {
             delete this._register[id];
